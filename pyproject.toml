@@ -1,0 +1,14 @@
+[project]
+name = "ai-inference-platform"
+version = "0.1.0"
+
+[tool.uv.workspace]
+members = [
+    "api-gateway",
+    "inference-controller",
+    "model-registry",
+    "services/fraud-service",
+    "services/forecasting-service",
+    "services/vllm-service",
+    "shared"
+]
