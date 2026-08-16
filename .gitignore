@@ -1,1 +1,7 @@
 .venv
+
+/ai-inference-platform/services/vllm-service/vllm/model
+
+/database/.env
+
+/plans
