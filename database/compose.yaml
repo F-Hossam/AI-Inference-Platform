@@ -3,12 +3,10 @@ name: ai-inference-database
 services:
   postgres:
     image: postgres:17-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-ai_inference}
-      POSTGRES_USER: ${POSTGRES_USER:-ai_inference}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local}
+    env_file:
+      - .env.local
     ports:
-      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./migrations/initial_schema.sql:/docker-entrypoint-initdb.d/initial_schema.sql:ro

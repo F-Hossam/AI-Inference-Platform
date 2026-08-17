@@ -2,14 +2,15 @@ BEGIN;
 
 CREATE TABLE users (
     id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    auth_id varchar(255) NOT NULL UNIQUE,
     email varchar(320) NOT NULL,
     name varchar(120) NOT NULL,
+    password_hash varchar(255) NOT NULL,
     role varchar(20) NOT NULL DEFAULT 'user',
     created_at timestamptz NOT NULL DEFAULT now(),
 
     CONSTRAINT users_email_not_blank CHECK (btrim(email) <> ''),
     CONSTRAINT users_name_not_blank CHECK (btrim(name) <> ''),
+    CONSTRAINT users_password_hash_not_blank CHECK (btrim(password_hash) <> ''),
     CONSTRAINT users_role_valid CHECK (role IN ('tester', 'user'))
 );
 
