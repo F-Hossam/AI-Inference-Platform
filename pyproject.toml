@@ -1,14 +1,38 @@
 [project]
 name = "ai-inference-platform"
 version = "0.1.0"
+readme = "README.md"
+authors = [
+    { name = "Hossam Fadil", email = "f.fadilhossam@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "asyncpg",
+    "email-validator",
+    "fastapi[standard]",
+    "httpx",
+    "numpy",
+    "onnxruntime",
+    "pwdlib[argon2]",
+    "pydantic",
+    "pydantic-settings",
+    "pyjwt",
+    "sqlalchemy[asyncio]",
+    "starlette",
+    "transformers",
+]
+
+[project.scripts]
+ai-inference-platform = "ai_inference_platform:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = false
 
 [tool.uv.workspace]
 members = [
-    "api-gateway",
-    "inference-controller",
-    "model-registry",
-    "services/fraud-service",
-    "services/forecasting-service",
-    "services/vllm-service",
-    "shared"
+    "services/email-detection-service",
 ]
