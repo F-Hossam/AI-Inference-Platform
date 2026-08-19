@@ -34,5 +34,6 @@ package = false
 
 [tool.uv.workspace]
 members = [
+    "api-gateway",
     "services/email-detection-service",
 ]
