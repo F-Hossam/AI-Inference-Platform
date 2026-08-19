@@ -53,4 +53,41 @@ CREATE INDEX inference_requests_user_time_idx
 CREATE INDEX inference_requests_model_time_idx
     ON inference_requests (model_id, requested_at DESC);
 
+INSERT INTO use_cases (name, description, is_ready)
+VALUES
+    (
+        'Chat with LLM',
+        'Generate conversational responses from a large language model.',
+        true
+    ),
+    (
+        'Phishing Email Detection',
+        'Classify email or URL content as legitimate or phishing.',
+        true
+    )
+ON CONFLICT (name) DO UPDATE
+SET description = EXCLUDED.description,
+    is_ready = EXCLUDED.is_ready;
+
+INSERT INTO models (use_case_id, name, version, service_path, is_active)
+VALUES
+    (
+        (SELECT id FROM use_cases WHERE name = 'Chat with LLM'),
+        'Mistral 7B Instruct',
+        '0.3-GPTQ-4bit',
+        '/models/vllm/v1/chat/completions',
+        true
+    ),
+    (
+        (SELECT id FROM use_cases WHERE name = 'Phishing Email Detection'),
+        'Phishing Email Detection DistilBERT',
+        '2.4.1-ONNX-fp16',
+        '/models/email-detection/predict',
+        true
+    )
+ON CONFLICT (name, version) DO UPDATE
+SET use_case_id = EXCLUDED.use_case_id,
+    service_path = EXCLUDED.service_path,
+    is_active = EXCLUDED.is_active;
+
 COMMIT;
