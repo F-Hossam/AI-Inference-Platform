@@ -28,13 +28,15 @@ CREATE TABLE models (
     use_case_id bigint NOT NULL REFERENCES use_cases(id) ON DELETE RESTRICT,
     name varchar(120) NOT NULL,
     version varchar(100) NOT NULL,
-    service_path varchar(255) NOT NULL UNIQUE,
+    service_url varchar(500) NOT NULL UNIQUE,
     is_active boolean NOT NULL DEFAULT false,
     created_at timestamptz NOT NULL DEFAULT now(),
 
     CONSTRAINT models_name_not_blank CHECK (btrim(name) <> ''),
     CONSTRAINT models_version_not_blank CHECK (btrim(version) <> ''),
-    CONSTRAINT models_service_path_valid CHECK (service_path LIKE '/models/%'),
+    CONSTRAINT models_service_url_valid CHECK (
+        service_url ~ '^https?://[^[:space:]]+$'
+    ),
     CONSTRAINT models_name_version_unique UNIQUE (name, version)
 );
 
@@ -69,25 +71,25 @@ ON CONFLICT (name) DO UPDATE
 SET description = EXCLUDED.description,
     is_ready = EXCLUDED.is_ready;
 
-INSERT INTO models (use_case_id, name, version, service_path, is_active)
+INSERT INTO models (use_case_id, name, version, service_url, is_active)
 VALUES
     (
         (SELECT id FROM use_cases WHERE name = 'Chat with LLM'),
         'Mistral 7B Instruct',
         '0.3-GPTQ-4bit',
-        '/models/vllm/v1/chat/completions',
+        'http://vllm-service:5000/v1/chat/completions',
         true
     ),
     (
         (SELECT id FROM use_cases WHERE name = 'Phishing Email Detection'),
         'Phishing Email Detection DistilBERT',
         '2.4.1-ONNX-fp16',
-        '/models/email-detection/predict',
+        'http://email-detection-service:6000/predict',
         true
     )
 ON CONFLICT (name, version) DO UPDATE
 SET use_case_id = EXCLUDED.use_case_id,
-    service_path = EXCLUDED.service_path,
+    service_url = EXCLUDED.service_url,
     is_active = EXCLUDED.is_active;
 
 COMMIT;
