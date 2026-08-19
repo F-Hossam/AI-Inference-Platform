@@ -40,7 +40,7 @@ class ModelRecord(Base):
     )
     name: Mapped[str] = mapped_column(String(120))
     version: Mapped[str] = mapped_column(String(100))
-    service_path: Mapped[str] = mapped_column(String(255), unique=True)
+    service_url: Mapped[str] = mapped_column(String(500), unique=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 

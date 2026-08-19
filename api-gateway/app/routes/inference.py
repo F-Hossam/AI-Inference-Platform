@@ -64,13 +64,10 @@ async def invoke_model(
         timeout=settings.inference_timeout_seconds,
         connect=settings.connect_timeout_seconds,
     )
-    client = httpx.AsyncClient(
-        base_url=str(settings.inference_base_url),
-        timeout=timeout,
-    )
+    client = httpx.AsyncClient(timeout=timeout)
     upstream_request = client.build_request(
         "POST",
-        model.service_path,
+        model.service_url,
         json=payload.input,
     )
 
@@ -87,8 +84,6 @@ async def invoke_model(
     content_type = upstream.headers.get("content-type")
     if content_type is not None:
         response_headers["content-type"] = content_type
-
-    print(upstream_request.url)
 
     return StreamingResponse(
         stop_on_disconnect(request, upstream),
